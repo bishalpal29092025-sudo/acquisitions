@@ -7,7 +7,7 @@ export const getAllUsers = async () => {
   try {
     return await db
       .select({
-        id: users.id,
+        id: users.public_id,
         email: users.email,
         name: users.name,
         role: users.role,
@@ -25,7 +25,7 @@ export const getUserById = async id => {
   try {
     const [user] = await db
       .select({
-        id: users.id,
+        id: users.public_id,
         email: users.email,
         name: users.name,
         role: users.role,
@@ -33,7 +33,7 @@ export const getUserById = async id => {
         updated_at: users.updated_at,
       })
       .from(users)
-      .where(eq(users.id, id))
+      .where(eq(users.public_id, id))
       .limit(1);
 
     if (!user) {
@@ -73,9 +73,9 @@ export const updateUser = async (id, updates) => {
     const [updatedUser] = await db
       .update(users)
       .set(updateData)
-      .where(eq(users.id, id))
+      .where(eq(users.public_id, id))
       .returning({
-        id: users.id,
+        id: users.public_id,
         email: users.email,
         name: users.name,
         role: users.role,
@@ -98,9 +98,9 @@ export const deleteUser = async id => {
 
     const [deletedUser] = await db
       .delete(users)
-      .where(eq(users.id, id))
+      .where(eq(users.public_id, id))
       .returning({
-        id: users.id,
+        id: users.public_id,
         email: users.email,
         name: users.name,
         role: users.role,

@@ -1,5 +1,6 @@
 import logger from '#config/logger.js';
 import { authenticateUser, createUser } from '#services/auth.service.js';
+import { getUserById } from '#services/users.service.js';
 import { cookies } from '#utils/cookies.js';
 import { formatValidationError } from '#utils/format.js';
 import { jwttoken } from '#utils/jwt.js';
@@ -89,8 +90,18 @@ export const signOut = (req, res) => {
   });
 };
 
-export const me = (req, res) => {
-  res.status(200).json({
-    user: req.user,
-  });
+export const me = async (req, res, next) => {
+  try {
+    const user = await getUserById(req.user.id);
+
+    res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    logger.error('me error', error);
+    if (error.message === 'User not found') {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    next(error);
+  }
 };

@@ -42,7 +42,7 @@ export const createUser = async ({ name, email, password, role = 'user' }) => {
       .insert(users)
       .values({ name, email, password: password_hash, role })
       .returning({
-        id: users.id,
+        id: users.public_id,
         name: users.name,
         email: users.email,
         role: users.role,
@@ -76,7 +76,7 @@ export const authenticateUser = async ({ email, password }) => {
 
     logger.info(`User ${existingUser.email} authenticated successfully`);
     return {
-      id: existingUser.id,
+      id: existingUser.public_id,
       name: existingUser.name,
       email: existingUser.email,
       role: existingUser.role,
